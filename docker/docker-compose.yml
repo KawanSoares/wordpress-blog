@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+
+  wordpress:
+    container_name: wordpress_blog
+    depends_on:
+      - db
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: 'no'
+    ports:
+      - 8000:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress_blog
+      WORDPRESS_DB_USER: wordpress_blog
+      WORDPRESS_DB_PASSWORD: wordpressblog
+      WORDPRESS_TABLE_PREFIX: wordpress_blog_
+    volumes:
+      - ../wordpress:/var/www/html
+      - ../php:/usr/local/etc/php/conf.d
+
+  wordpress-cli:
+    container_name: wordpress-cli
+    depends_on:
+      - wordpress
+      - db
+    image: wordpress:cli-php8.2
+    user: 1000:1000
+    command: tail -f /dev/null
+    volumes:
+      - ../wordpress:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress_blog
+      WORDPRESS_DB_USER: wordpress_blog
+      WORDPRESS_DB_PASSWORD: wordpressblog
+      WORDPRESS_TABLE_PREFIX: wordpress_blog_
+
+  db:
+    image: mysql:latest
+    restart: 'no'
+    environment:
+      MYSQL_DATABASE: wordpress_blog
+      MYSQL_USER: wordpress_blog
+      MYSQL_PASSWORD: wordpressblog
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - ../db:/var/lib/mysql
+
+volumes:
+  wordpress:
+  db:
+
