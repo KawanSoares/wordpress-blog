@@ -1,9 +1,10 @@
-version: '3.8'
+version: '3.7'
 
 services:
 
   wordpress:
     container_name: wordpress_blog
+    image: wordpress:php8.2
     depends_on:
       - db
     build:
@@ -22,22 +23,22 @@ services:
       - ../wordpress:/var/www/html
       - ../php:/usr/local/etc/php/conf.d
 
-  wordpress-cli:
-    container_name: wordpress-cli
-    depends_on:
-      - wordpress
-      - db
-    image: wordpress:cli-php8.2
-    user: 1000:1000
-    command: tail -f /dev/null
-    volumes:
-      - ../wordpress:/var/www/html
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_NAME: wordpress_blog
-      WORDPRESS_DB_USER: wordpress_blog
-      WORDPRESS_DB_PASSWORD: wordpressblog
-      WORDPRESS_TABLE_PREFIX: wordpress_blog_
+  # wordpress-cli:
+  #   container_name: wordpress-cli
+  #   depends_on:
+  #     - wordpress
+  #     - db
+  #   image: wordpress:cli-php8.2
+  #   user: 1000:1000
+  #   command: tail -f /dev/null
+  #   volumes:
+  #     - ../wordpress:/var/www/html
+  #   environment:
+  #     WORDPRESS_DB_HOST: db
+  #     WORDPRESS_DB_NAME: wordpress_blog
+  #     WORDPRESS_DB_USER: wordpress_blog
+  #     WORDPRESS_DB_PASSWORD: wordpressblog
+  #     WORDPRESS_TABLE_PREFIX: wordpress_blog_
 
   db:
     image: mysql:latest
